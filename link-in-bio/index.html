@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<!-- TODO: set your page title -->
+<title>YourName — Software Dev & Cybersecurity</title>
+<style>
+  :root{
+    --bg:#060A07; --panel:#0C130E; --panel2:#0A100C;
+    --line:rgba(148,222,180,.14); --line2:rgba(148,222,180,.28);
+    --green:#4ADE80; --green-deep:#22C55E; --amber:#FFBD2E;
+    --orange:#FB923C; --red:#F87171;
+    --text:#F2F7F2; --muted:#9CA89C;
+    --glow:0 0 24px rgba(74,222,128,.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  ::selection{background:rgba(74,222,128,.35)}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:var(--bg); color:var(--text); min-height:100vh;
+    overflow-x:hidden;
+  }
+  /* ---------- code-rain backdrop ---------- */
+  #rain{position:fixed;inset:0;z-index:0;opacity:.16;pointer-events:none}
+  .vignette{
+    position:fixed;inset:0;z-index:1;pointer-events:none;
+    background:
+      radial-gradient(700px 480px at 85% -5%, rgba(74,222,128,.10), transparent 60%),
+      radial-gradient(600px 480px at 5% 40%, rgba(255,189,46,.05), transparent 60%),
+      radial-gradient(700px 500px at 90% 100%, rgba(251,146,60,.06), transparent 60%);
+  }
+  .wrap{position:relative;z-index:2;width:100%;max-width:480px;margin:0 auto;padding:56px 20px 120px}
+
+  /* ---------- hero ---------- */
+  header{text-align:center;margin-bottom:14px}
+  .mark{
+    width:104px;height:104px;margin:0 auto 20px;border-radius:30px;position:relative;
+    background:var(--panel);border:1px solid var(--line2);
+    display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--glow), inset 0 0 30px rgba(74,222,128,.06);
+    animation:floatY 5s ease-in-out infinite;
+  }
+  .mark svg{position:relative;z-index:1;width:58px;height:58px}
+  .mark::before{
+    content:"";position:absolute;inset:-3px;border-radius:33px;z-index:-1;
+    background:conic-gradient(from 0deg,var(--green),var(--amber),var(--orange),var(--green));
+    filter:blur(14px);opacity:.45;animation:spin 6s linear infinite;
+  }
+  .mark::after{
+    content:"";position:absolute;inset:0;border-radius:30px;
+    background:var(--panel);
+  }
+  .mark span{position:relative;z-index:1}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+
+  h1{font-size:28px;font-weight:700;letter-spacing:.2px}
+  /* TODO: your names */
+  .handle{font-family:Consolas,monospace;color:var(--green);font-size:14px;margin-top:6px}
+  .tagline{
+    color:var(--muted);font-size:15.5px;line-height:1.65;margin-top:14px;min-height:3.2em;
+  }
+  .tagline .typed{color:var(--text);font-weight:600}
+  .tagline .caret{
+    display:inline-block;width:9px;height:1.05em;vertical-align:text-bottom;
+    background:var(--green);margin-left:3px;animation:blink 1s steps(1) infinite;
+  }
+  @keyframes blink{50%{opacity:0}}
+
+  .status{
+    display:inline-flex;align-items:center;gap:9px;margin-top:18px;
+    padding:8px 16px;border-radius:999px;font-size:13px;font-weight:600;
+    color:var(--green);background:rgba(74,222,128,.08);
+    border:1px solid rgba(74,222,128,.35);letter-spacing:.3px;
+  }
+  .status .dot{width:8px;height:8px;border-radius:50%;background:var(--green);position:relative}
+  .status .dot::after{
+    content:"";position:absolute;inset:-4px;border-radius:50%;
+    border:2px solid var(--green);opacity:.6;animation:ping 1.6s ease-out infinite;
+  }
+  @keyframes ping{0%{transform:scale(.5);opacity:.8}100%{transform:scale(1.7);opacity:0}}
+
+  /* ---------- marquee ---------- */
+  .marquee{
+    margin:30px -20px 8px;border-top:1px solid var(--line);border-bottom:1px solid var(--line);
+    overflow:hidden;padding:11px 0;background:rgba(12,19,14,.6);
+  }
+  .marquee .track{
+    display:inline-flex;gap:34px;white-space:nowrap;
+    font-family:Consolas,monospace;font-size:13px;letter-spacing:2.5px;
+    color:var(--muted);animation:scrollX 22s linear infinite;
+  }
+  .marquee b{color:var(--green);font-weight:400}
+  @keyframes scrollX{to{transform:translateX(-50%)}}
+
+  /* ---------- links ---------- */
+  .links{display:flex;flex-direction:column;gap:14px;margin-top:26px}
+  a.card{
+    display:flex;align-items:center;gap:16px;padding:17px 18px;
+    background:linear-gradient(180deg,var(--panel),var(--panel2));
+    border:1px solid var(--line);border-radius:18px;
+    text-decoration:none;color:var(--text);position:relative;overflow:hidden;
+    opacity:0;transform:translateY(26px);
+    transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
+  }
+  a.card.in{animation:rise .6s cubic-bezier(.2,.7,.2,1) forwards;animation-delay:var(--d,0s)}
+  @keyframes rise{to{opacity:1;transform:translateY(0)}}
+  a.card::before{ /* sheen sweep on hover */
+    content:"";position:absolute;top:0;left:-80%;width:55%;height:100%;
+    background:linear-gradient(100deg,transparent,rgba(74,222,128,.10),transparent);
+    transform:skewX(-18deg);transition:left .5s ease;
+  }
+  a.card:hover::before{left:130%}
+  a.card:hover{transform:translateY(-3px);border-color:var(--c,var(--green));box-shadow:0 8px 30px rgba(0,0,0,.45),0 0 22px color-mix(in srgb,var(--c,var(--green)) 22%,transparent)}
+  .ico{
+    width:46px;height:46px;border-radius:13px;flex:none;
+    display:flex;align-items:center;justify-content:center;
+    background:color-mix(in srgb,var(--c,var(--green)) 13%,transparent);
+    border:1px solid color-mix(in srgb,var(--c,var(--green)) 35%,transparent);
+    transition:transform .25s cubic-bezier(.3,1.6,.4,1);
+  }
+  a.card:hover .ico{transform:scale(1.12) rotate(-4deg)}
+  .ico svg{width:22px;height:22px;stroke:var(--c,var(--green));fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+  .t{font-weight:600;font-size:16px}
+  .d{color:var(--muted);font-size:13px;margin-top:3px}
+  .arrow{
+    margin-left:auto;color:var(--muted);font-family:Consolas,monospace;font-size:17px;
+    transition:transform .2s ease,color .2s ease;
+  }
+  a.card:hover .arrow{transform:translateX(5px);color:var(--c,var(--green))}
+
+  /* ---------- terminal ---------- */
+  .term{
+    margin-top:34px;background:#050906;border:1px solid var(--line2);border-radius:16px;
+    overflow:hidden;box-shadow:0 14px 40px rgba(0,0,0,.45);
+    opacity:0;transform:translateY(26px);transition:opacity .6s ease,transform .6s ease;
+  }
+  .term.in{opacity:1;transform:none}
+  .term .bar{display:flex;gap:8px;padding:12px 14px;border-bottom:1px solid var(--line)}
+  .term .bar i{width:11px;height:11px;border-radius:50%}
+  .term .bar i:nth-child(1){background:var(--red)}
+  .term .bar i:nth-child(2){background:var(--amber)}
+  .term .bar i:nth-child(3){background:var(--green)}
+  .term .bar span{margin-left:auto;font-family:Consolas,monospace;font-size:11.5px;color:var(--muted)}
+  .term pre{
+    font-family:Consolas,monospace;font-size:13.5px;line-height:1.9;
+    padding:16px 18px 20px;white-space:pre-wrap;min-height:168px;
+  }
+  .term .p{color:var(--green)}
+  .term .ok{color:var(--green)}
+  .term .warn{color:var(--amber)}
+  .term .dim{color:var(--muted)}
+  .term .caret{display:inline-block;width:8px;height:1em;vertical-align:text-bottom;background:var(--green);animation:blink 1s steps(1) infinite}
+
+  /* ---------- stats ---------- */
+  .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:30px}
+  .stat{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;
+    padding:18px 8px;text-align:center;
+    opacity:0;transform:translateY(22px);transition:opacity .6s ease,transform .6s ease;
+  }
+  .stat.in{opacity:1;transform:none}
+  .stat b{display:block;font-size:26px;color:var(--green);font-variant-numeric:tabular-nums}
+  .stat:nth-child(2) b{color:var(--amber)}
+  .stat:nth-child(3) b{color:var(--orange)}
+  .stat small{color:var(--muted);font-size:11.5px;letter-spacing:.6px;text-transform:uppercase}
+
+  /* ---------- reveal sections ---------- */
+  .reveal{opacity:0;transform:translateY(26px);transition:opacity .65s ease,transform .65s ease}
+  .reveal.in{opacity:1;transform:none}
+  .sec-title{
+    margin:40px 0 14px;font-size:12.5px;letter-spacing:3px;text-transform:uppercase;
+    color:var(--muted);display:flex;align-items:center;gap:12px;
+  }
+  .sec-title::after{content:"";flex:1;height:1px;background:var(--line)}
+  .services{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .srv{
+    background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:16px;
+  }
+  .srv b{font-size:14.5px;display:flex;align-items:center;gap:8px}
+  .srv b i{width:7px;height:7px;border-radius:2px;background:var(--green);flex:none;transform:rotate(45deg)}
+  .srv:nth-child(2) b i{background:var(--red)}
+  .srv:nth-child(3) b i{background:var(--orange)}
+  .srv:nth-child(4) b i{background:var(--amber)}
+  .srv small{color:var(--muted);font-size:12.5px;line-height:1.55;display:block;margin-top:7px}
+
+  /* ---------- footer + sticky CTA ---------- */
+  footer{margin-top:44px;text-align:center;color:var(--muted);font-size:13px;line-height:2}
+  footer .tag{font-family:Consolas,monospace;color:var(--green)}
+  .cta-bar{
+    position:fixed;left:0;right:0;bottom:0;z-index:10;
+    padding:12px 16px calc(12px + env(safe-area-inset-bottom));
+    background:rgba(8,13,10,.82);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);
+    border-top:1px solid var(--line);
+    transform:translateY(110%);transition:transform .4s cubic-bezier(.2,.8,.2,1);
+  }
+  .cta-bar.show{transform:none}
+  .cta-inner{max-width:448px;margin:0 auto;display:flex;gap:12px;align-items:center}
+  .cta-inner .txt{font-size:13px;color:var(--muted);line-height:1.4}
+  .cta-inner .txt b{display:block;color:var(--text);font-size:14px}
+  .cta-inner a{
+    margin-left:auto;flex:none;text-decoration:none;font-weight:700;font-size:14px;
+    color:#04120A;background:linear-gradient(135deg,var(--green),var(--green-deep));
+    padding:12px 20px;border-radius:12px;box-shadow:var(--glow);
+    transition:transform .15s ease,box-shadow .15s ease;
+  }
+  .cta-inner a:hover{transform:translateY(-2px);box-shadow:0 0 34px rgba(74,222,128,.4)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation:none!important;transition:none!important}
+    a.card,.term,.stat,.reveal{opacity:1;transform:none}
+    #rain{display:none}
+  }
+</style>
+</head>
+<body>
+<canvas id="rain"></canvas>
+<div class="vignette"></div>
+
+<div class="wrap">
+  <header>
+    <div class="mark">
+      <svg viewBox="0 0 24 24" fill="none" aria-label="logo">
+        <path d="M12 2.5l7.5 3.2v5.1c0 4.9-3.2 9.3-7.5 10.9-4.3-1.6-7.5-6-7.5-10.9V5.7L12 2.5z"
+              stroke="var(--green)" stroke-width="1.7" stroke-linejoin="round"/>
+        <text x="12" y="13.8" text-anchor="middle" fill="#F2F7F2"
+              font-family="Consolas,monospace" font-size="6.3" font-weight="700">&lt;/&gt;</text>
+      </svg>
+    </div>
+    <!-- TODO: your names -->
+    <h1>YourName Duo</h1>
+    <div class="handle">@your.handle</div>
+    <p class="tagline"><span class="typed" id="typed"></span><span class="caret"></span></p>
+    <div class="status"><span class="dot"></span> ACCEPTING NEW PROJECTS</div>
+  </header>
+
+  <div class="marquee" aria-hidden="true">
+    <div class="track" id="track"></div>
+  </div>
+
+  <div class="links">
+    <!-- TODO: replace every href with your real link -->
+    <a class="card" style="--c:var(--green);--d:.05s" href="#services">
+      <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
+      <span><span class="t">Our Services</span><span class="d">Software · Security · Automation</span></span>
+      <span class="arrow">-&gt;</span>
+    </a>
+
+    <a class="card" style="--c:var(--green);--d:.12s" href="#book">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></span>
+      <span><span class="t">Book a Free 15-min Chat</span><span class="d">Tell us about your project</span></span>
+      <span class="arrow">-&gt;</span>
+    </a>
+
+    <a class="card" style="--c:var(--orange);--d:.19s" href="#portfolio">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
+      <span><span class="t">Recent Work</span><span class="d">Projects &amp; case studies</span></span>
+      <span class="arrow">-&gt;</span>
+    </a>
+
+    <a class="card" style="--c:var(--green);--d:.26s" href="#whatsapp">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg></span>
+      <span><span class="t">WhatsApp Us</span><span class="d">Fastest reply</span></span>
+      <span class="arrow">-&gt;</span>
+    </a>
+
+    <a class="card" style="--c:var(--red);--d:.33s" href="#checklist">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4.5"/></svg></span>
+      <span><span class="t">Free Security Checklist</span><span class="d">10 things to check today</span></span>
+      <span class="arrow">-&gt;</span>
+    </a>
+
+    <a class="card" style="--c:var(--amber);--d:.40s" href="#linkedin">
+      <span class="ico"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
+      <span><span class="t">LinkedIn</span><span class="d">Let's connect professionally</span></span>
+      <span class="arrow">-&gt;</span>
+    </a>
+  </div>
+
+  <div class="term reveal" id="term">
+    <div class="bar"><i></i><i></i><i></i><span>duo@work:~</span></div>
+    <pre id="term-out"></pre>
+  </div>
+
+  <div class="stats" id="stats">
+    <div class="stat"><b>&lt;<span data-count="24" data-suffix="h">0</span></b><small>reply time</small></div>
+    <div class="stat"><b><span data-count="100" data-suffix="%">0</span></b><small>fixed quotes</small></div>
+    <div class="stat"><b><span data-count="2" data-suffix="-in-1">0</span></b><small>dev + hacker</small></div>
+  </div>
+
+  <div class="sec-title reveal">What we do</div>
+  <div class="services">
+    <div class="srv reveal" style="--d:.05s"><b><i></i>Custom Software</b><small>Web apps, dashboards, MVPs — built right the first time.</small></div>
+    <div class="srv reveal" style="--d:.12s"><b><i></i>Cybersecurity</b><small>Audits, pentesting, hardening — we attack it before they do.</small></div>
+    <div class="srv reveal" style="--d:.19s"><b><i></i>Python Automation</b><small>Bots, scrapers, pipelines — robots do the robot work.</small></div>
+    <div class="srv reveal" style="--d:.26s"><b><i></i>Fix-it Missions</b><small>Inherited a mess? We audit, stabilize and ship.</small></div>
+  </div>
+
+  <footer class="reveal">
+    Response time &lt; 24h · <span class="tag">DM "PROJECT"</span> on Instagram<br>
+    built &amp; secured by us, obviously <span class="tag">✦</span>
+  </footer>
+</div>
+
+<div class="cta-bar" id="ctabar">
+  <div class="cta-inner">
+    <div class="txt"><b>Got a project in mind?</b>Free 15-min chat, honest answers.</div>
+    <!-- TODO: your booking link -->
+    <a href="#book">Book it</a>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  /* ---------- matrix rain ---------- */
+  var cv = document.getElementById("rain"), cx = cv.getContext("2d"), cols = [], glyphs =
+    "01{}[]<>/$#;=+*abcdefdefvoidintreturnimport0123456789".split("");
+  function size(){
+    cv.width = innerWidth; cv.height = innerHeight;
+    var n = Math.floor(innerWidth / 22);
+    cols = Array.from({length:n}, function(){ return Math.random() * -60; });
+  }
+  function rain(){
+    cx.fillStyle = "rgba(6,10,7,.35)"; cx.fillRect(0,0,cv.width,cv.height);
+    cx.font = "15px Consolas, monospace";
+    cols.forEach(function(y,i){
+      cx.fillStyle = Math.random() < .06 ? "#FFBD2E" : "#37B56B";
+      cx.fillText(glyphs[(Math.random()*glyphs.length)|0], i*22+6, y*18);
+      cols[i] = y*18 > cv.height && Math.random() > .975 ? 0 : y+1;
+    });
+    setTimeout(rain, 66);
+  }
+  size(); addEventListener("resize", size);
+  if(!reduce) rain();
+
+  /* ---------- marquee content (duplicated for seamless loop) ---------- */
+  var words = ["SOFTWARE","SECURITY","PYTHON","AUTOMATION","PENTESTING","BUILD + PROTECT"];
+  var html = words.map(function(w){ return "<b>✦</b> " + w; }).join(" ") + " ";
+  document.getElementById("track").innerHTML = html + html;
+
+  /* ---------- hero typing rotator ---------- */
+  var phrases = [
+    "We build your product.",
+    "Then we attack it — like hackers would.",
+    "So your users never meet one."
+  ], pi = 0, ci = 0, del = false, typed = document.getElementById("typed");
+  function type(){
+    var p = phrases[pi];
+    typed.textContent = p.slice(0, ci);
+    if(!del && ci < p.length){ ci++; setTimeout(type, 46); }
+    else if(!del){ del = true; setTimeout(type, 1700); }
+    else if(ci > 0){ ci--; setTimeout(type, 22); }
+    else { del = false; pi = (pi+1) % phrases.length; setTimeout(type, 350); }
+  }
+  if(reduce){ typed.textContent = phrases.join(" "); } else type();
+
+  /* ---------- terminal autotype loop ---------- */
+  var out = document.getElementById("term-out"), tQ = [
+    {cmd:"whoami", out:[["ok","dev + security duo — build it, then break it (legally)"]]},
+    {cmd:"run client_project --status", out:[["ok","> shipping: 3 projects in progress"],
+                                             ["warn","> vulnerabilities found this month: 17 — all patched"]]},
+    {cmd:'dm --keyword "PROJECT"', out:[["dim","> hint: that's how our clients start"]]}
+  ];
+  function tType(){
+    out.innerHTML = ""; var li = 0;
+    function line(){
+      if(li >= tQ.length){ setTimeout(tType, 4500); return; }
+      var q = tQ[li];
+      var row = document.createElement("div"); out.appendChild(row);
+      var pr = document.createElement("span"); pr.className = "p"; pr.textContent = "$ ";
+      var cmd = document.createElement("span"); cmd.className = "t";
+      row.appendChild(pr); row.appendChild(cmd);
+      var i = 0;
+      (function tick(){
+        if(i < q.cmd.length){ cmd.textContent += q.cmd[i++]; setTimeout(tick, 30 + Math.random()*50); }
+        else outLines();
+      })();
+      function outLines(){
+        var fi = 0;
+        (function next(){
+          if(fi >= q.out.length){ li++; setTimeout(line, 550); return; }
+          var o = document.createElement("div");
+          o.className = q.out[fi][0]; o.textContent = q.out[fi][1];
+          out.appendChild(o); fi++; setTimeout(next, 240);
+        })();
+      }
+    }
+    line();
+  }
+  if(reduce){
+    out.innerHTML = tQ.map(function(q){
+      return '<div><span class="p">$ </span><span class="t">' + q.cmd + "</span></div>" +
+        q.out.map(function(o){ return '<div class="' + o[0] + '">' + o[1] + "</div>"; }).join("");
+    }).join("");
+  } else {
+    new IntersectionObserver(function(es,ob){
+      if(es[0].isIntersecting){ ob.disconnect(); tType(); }
+    },{threshold:.4}).observe(document.getElementById("term"));
+  }
+
+  /* ---------- scroll reveals + counters ---------- */
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.classList.add("in");
+      e.target.querySelectorAll("[data-count]").forEach(count);
+      io.unobserve(e.target);
+    });
+  },{threshold:.25});
+  document.querySelectorAll(".stat, .reveal, .links .card").forEach(function(el){ io.observe(el); });
+
+  function count(el){
+    if(el.dataset.done) return; el.dataset.done = 1;
+    var end = +el.dataset.count, suf = el.dataset.suffix || "", t0 = null;
+    if(reduce){ el.textContent = end + suf; return; }
+    (function step(t){
+      if(!t0) t0 = t;
+      var k = Math.min((t - t0) / 1200, 1);
+      el.textContent = Math.round(end * (1 - Math.pow(1-k, 3))) + (k === 1 ? suf : "");
+      if(k < 1) requestAnimationFrame(step);
+    })(performance.now());
+  }
+
+  /* ---------- sticky CTA appears after hero ---------- */
+  var bar = document.getElementById("ctabar");
+  addEventListener("scroll", function(){
+    bar.classList.toggle("show", scrollY > 260);
+  }, {passive:true});
+})();
+</script>
+</body>
+</html>
