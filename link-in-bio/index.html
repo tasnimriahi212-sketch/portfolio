@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<!-- TODO: set your page title -->
 <title>YourName — Software Dev & Cybersecurity</title>
+<script src="config.js"></script>
 <style>
   :root{
     --bg:#060A07; --panel:#0C130E; --panel2:#0A100C;
@@ -43,6 +43,7 @@
     animation:floatY 5s ease-in-out infinite;
   }
   .mark svg{position:relative;z-index:1;width:58px;height:58px}
+  .mark img{position:relative;z-index:1;width:84px;height:84px;border-radius:22px;object-fit:cover}
   .mark::before{
     content:"";position:absolute;inset:-3px;border-radius:33px;z-index:-1;
     background:conic-gradient(from 0deg,var(--green),var(--amber),var(--orange),var(--green));
@@ -52,12 +53,11 @@
     content:"";position:absolute;inset:0;border-radius:30px;
     background:var(--panel);
   }
-  .mark span{position:relative;z-index:1}
+  .mark > *{position:relative;z-index:1}
   @keyframes spin{to{transform:rotate(360deg)}}
   @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
 
   h1{font-size:28px;font-weight:700;letter-spacing:.2px}
-  /* TODO: your names */
   .handle{font-family:Consolas,monospace;color:var(--green);font-size:14px;margin-top:6px}
   .tagline{
     color:var(--muted);font-size:15.5px;line-height:1.65;margin-top:14px;min-height:3.2em;
@@ -101,7 +101,7 @@
     display:flex;align-items:center;gap:16px;padding:17px 18px;
     background:linear-gradient(180deg,var(--panel),var(--panel2));
     border:1px solid var(--line);border-radius:18px;
-    text-decoration:none;color:var(--text);position:relative;overflow:hidden;
+    text-decoration:none;color:var(--text);position:relative;overflow:hidden;cursor:pointer;
     opacity:0;transform:translateY(26px);
     transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease;
   }
@@ -208,6 +208,18 @@
   }
   .cta-inner a:hover{transform:translateY(-2px);box-shadow:0 0 34px rgba(74,222,128,.4)}
 
+  /* ---------- toast (unset links) ---------- */
+  .toast{
+    position:fixed;left:50%;bottom:96px;transform:translateX(-50%) translateY(20px);
+    z-index:20;max-width:88%;
+    background:#101a12;border:1px solid var(--amber);border-radius:12px;
+    padding:12px 18px;font-size:13.5px;line-height:1.5;color:var(--text);
+    box-shadow:0 10px 30px rgba(0,0,0,.5);opacity:0;pointer-events:none;
+    transition:opacity .25s ease,transform .25s ease;
+  }
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  .toast b{color:var(--amber)}
+
   @media (prefers-reduced-motion:reduce){
     *,*::before,*::after{animation:none!important;transition:none!important}
     a.card,.term,.stat,.reveal{opacity:1;transform:none}
@@ -221,63 +233,18 @@
 
 <div class="wrap">
   <header>
-    <div class="mark">
-      <svg viewBox="0 0 24 24" fill="none" aria-label="logo">
-        <path d="M12 2.5l7.5 3.2v5.1c0 4.9-3.2 9.3-7.5 10.9-4.3-1.6-7.5-6-7.5-10.9V5.7L12 2.5z"
-              stroke="var(--green)" stroke-width="1.7" stroke-linejoin="round"/>
-        <text x="12" y="13.8" text-anchor="middle" fill="#F2F7F2"
-              font-family="Consolas,monospace" font-size="6.3" font-weight="700">&lt;/&gt;</text>
-      </svg>
-    </div>
-    <!-- TODO: your names -->
-    <h1>YourName Duo</h1>
-    <div class="handle">@your.handle</div>
+    <div class="mark" id="mark"></div>
+    <h1 id="h-name">YourName Duo</h1>
+    <div class="handle" id="h-handle">@your.handle</div>
     <p class="tagline"><span class="typed" id="typed"></span><span class="caret"></span></p>
-    <div class="status"><span class="dot"></span> ACCEPTING NEW PROJECTS</div>
+    <div class="status" id="h-status"><span class="dot"></span> ACCEPTING NEW PROJECTS</div>
   </header>
 
   <div class="marquee" aria-hidden="true">
     <div class="track" id="track"></div>
   </div>
 
-  <div class="links">
-    <!-- TODO: replace every href with your real link -->
-    <a class="card" style="--c:var(--green);--d:.05s" href="#services">
-      <span class="ico"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg></span>
-      <span><span class="t">Our Services</span><span class="d">Software · Security · Automation</span></span>
-      <span class="arrow">-&gt;</span>
-    </a>
-
-    <a class="card" style="--c:var(--green);--d:.12s" href="#book">
-      <span class="ico"><svg viewBox="0 0 24 24"><path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/></svg></span>
-      <span><span class="t">Book a Free 15-min Chat</span><span class="d">Tell us about your project</span></span>
-      <span class="arrow">-&gt;</span>
-    </a>
-
-    <a class="card" style="--c:var(--orange);--d:.19s" href="#portfolio">
-      <span class="ico"><svg viewBox="0 0 24 24"><path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/></svg></span>
-      <span><span class="t">Recent Work</span><span class="d">Projects &amp; case studies</span></span>
-      <span class="arrow">-&gt;</span>
-    </a>
-
-    <a class="card" style="--c:var(--green);--d:.26s" href="#whatsapp">
-      <span class="ico"><svg viewBox="0 0 24 24"><path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/></svg></span>
-      <span><span class="t">WhatsApp Us</span><span class="d">Fastest reply</span></span>
-      <span class="arrow">-&gt;</span>
-    </a>
-
-    <a class="card" style="--c:var(--red);--d:.33s" href="#checklist">
-      <span class="ico"><svg viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4.5"/></svg></span>
-      <span><span class="t">Free Security Checklist</span><span class="d">10 things to check today</span></span>
-      <span class="arrow">-&gt;</span>
-    </a>
-
-    <a class="card" style="--c:var(--amber);--d:.40s" href="#linkedin">
-      <span class="ico"><svg viewBox="0 0 24 24"><path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/></svg></span>
-      <span><span class="t">LinkedIn</span><span class="d">Let's connect professionally</span></span>
-      <span class="arrow">-&gt;</span>
-    </a>
-  </div>
+  <div class="links" id="links"></div>
 
   <div class="term reveal" id="term">
     <div class="bar"><i></i><i></i><i></i><span>duo@work:~</span></div>
@@ -298,7 +265,7 @@
     <div class="srv reveal" style="--d:.26s"><b><i></i>Fix-it Missions</b><small>Inherited a mess? We audit, stabilize and ship.</small></div>
   </div>
 
-  <footer class="reveal">
+  <footer class="reveal" id="h-footer">
     Response time &lt; 24h · <span class="tag">DM "PROJECT"</span> on Instagram<br>
     built &amp; secured by us, obviously <span class="tag">✦</span>
   </footer>
@@ -307,14 +274,140 @@
 <div class="cta-bar" id="ctabar">
   <div class="cta-inner">
     <div class="txt"><b>Got a project in mind?</b>Free 15-min chat, honest answers.</div>
-    <!-- TODO: your booking link -->
-    <a href="#book">Book it</a>
+    <a href="#" data-link="book" id="cta-btn">Book it</a>
   </div>
 </div>
+
+<div class="toast" id="toast" role="status"></div>
 
 <script>
 (function(){
   "use strict";
+
+  /* ================= config ================= */
+  var DEFAULTS = {
+    name: "YourName Duo",
+    handle: "@your.handle",
+    typing: ["We build your product.", "Then we attack it — like hackers would.", "So your users never meet one."],
+    status: "ACCEPTING NEW PROJECTS",
+    logoText: "</>",
+    logoImage: null,
+    accent: "#4ADE80",
+    phone: "",
+    links: {
+      services:  { url: "", title: "Our Services",            desc: "Software · Security · Automation" },
+      book:      { url: "", title: "Book a Free 15-min Chat", desc: "Tell us about your project" },
+      portfolio: { url: "", title: "Recent Work",             desc: "Projects & case studies" },
+      whatsapp:  { url: "", title: "WhatsApp Us",            desc: "Fastest reply" },
+      checklist: { url: "", title: "Free Security Checklist", desc: "10 things to check today" },
+      linkedin:  { url: "", title: "LinkedIn",                desc: "Let's connect professionally" }
+    },
+    footer: 'Response time < 24h · DM "PROJECT" on Instagram'
+  };
+  var stored = null;
+  try { stored = JSON.parse(localStorage.getItem("bio-config")); } catch(e) {}
+  var CFG = Object.assign({}, DEFAULTS, window.BIO_CONFIG || {}, stored || {});
+  CFG.links = Object.assign({}, DEFAULTS.links, (window.BIO_CONFIG || {}).links, (stored || {}).links);
+
+  /* ---- resolve final URLs (wa.me from phone, etc.) ---- */
+  var digits = (CFG.phone || "").replace(/[^0-9]/g, "");
+  function linkUrl(key){
+    var l = CFG.links[key] || {};
+    if (l.url && l.url !== "#") return l.url;
+    if (key === "whatsapp" && digits)
+      return "https://wa.me/" + digits + "?text=" + encodeURIComponent("Hi! I found you on Instagram — I have a project in mind.");
+    return "";
+  }
+
+  /* ---- apply brand ---- */
+  document.title = CFG.name + " — Software Dev & Cybersecurity";
+  document.getElementById("h-name").textContent = CFG.name;
+  document.getElementById("h-handle").textContent = CFG.handle;
+  document.getElementById("h-status").innerHTML =
+    '<span class="dot"></span> ' + String(CFG.status).replace(/&/g,"&amp;").replace(/</g,"&lt;");
+  document.getElementById("h-footer").innerHTML =
+    String(CFG.footer).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/(DM "PROJECT")/, '<span class="tag">$1</span>') +
+    '<br>built &amp; secured by us, obviously <span class="tag">✦</span>';
+  document.documentElement.style.setProperty("--green", CFG.accent);
+  var accent = CFG.accent;
+  function hexToRgb(h){
+    var m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(h);
+    return m ? [parseInt(m[1],16), parseInt(m[2],16), parseInt(m[3],16)] : [74,222,128];
+  }
+  var ar = hexToRgb(accent);
+  var s = document.documentElement.style;
+  s.setProperty("--glow", "0 0 24px rgba(" + ar.join(",") + ",.25)");
+
+  var mark = document.getElementById("mark");
+  if (CFG.logoImage) {
+    var im = document.createElement("img");
+    im.src = CFG.logoImage; im.alt = "logo";
+    mark.appendChild(im);
+  } else {
+    mark.innerHTML =
+      '<svg viewBox="0 0 24 24" fill="none" aria-label="logo">' +
+      '<path d="M12 2.5l7.5 3.2v5.1c0 4.9-3.2 9.3-7.5 10.9-4.3-1.6-7.5-6-7.5-10.9V5.7L12 2.5z" ' +
+      'stroke="var(--green)" stroke-width="1.7" stroke-linejoin="round"/>' +
+      '<text x="12" y="13.8" text-anchor="middle" fill="#F2F7F2" font-family="Consolas,monospace" ' +
+      'font-size="6.3" font-weight="700">&lt;/&gt;</text></svg>';
+  }
+
+  /* ---- build link cards ---- */
+  var ICONS = {
+    grid:     '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>',
+    list:     '<path d="M8 6h13M8 12h13M8 18h13"/><path d="M3.5 6h.01M3.5 12h.01M3.5 18h.01"/>',
+    code:     '<path d="M16 18l6-6-6-6M8 6l-6 6 6 6"/>',
+    chat:     '<path d="M21 11.5a8.5 8.5 0 0 1-12.3 7.6L3 21l1.9-5.7A8.5 8.5 0 1 1 21 11.5z"/>',
+    shield:   '<path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6l7-3z"/><path d="M9 12l2 2 4-4.5"/>',
+    linkedin: '<path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/><rect x="2" y="9" width="4" height="12"/><circle cx="4" cy="4" r="2"/>'
+  };
+  var CARD_DEFS = [
+    { key:"services",  icon:"grid",     color:"var(--green)",  delay:.05 },
+    { key:"book",      icon:"list",     color:"var(--green)",  delay:.12 },
+    { key:"portfolio", icon:"code",     color:"var(--orange)", delay:.19 },
+    { key:"whatsapp",  icon:"chat",     color:"var(--green)",  delay:.26 },
+    { key:"checklist", icon:"shield",   color:"var(--red)",    delay:.33 },
+    { key:"linkedin",  icon:"linkedin", color:"var(--amber)",  delay:.40 }
+  ];
+  var linksEl = document.getElementById("links");
+  CARD_DEFS.forEach(function(def){
+    var l = CFG.links[def.key] || DEFAULTS.links[def.key];
+    var a = document.createElement("a");
+    a.className = "card";
+    a.dataset.link = def.key;
+    a.style.setProperty("--c", def.color);
+    a.style.setProperty("--d", def.delay + "s");
+    a.href = linkUrl(def.key) || "#";
+    a.target = linkUrl(def.key) ? "_blank" : "_self";
+    a.rel = "noopener";
+    a.innerHTML =
+      '<span class="ico"><svg viewBox="0 0 24 24">' + ICONS[def.icon] + '</svg></span>' +
+      '<span><span class="t"></span><span class="d"></span></span>' +
+      '<span class="arrow">-&gt;</span>';
+    a.querySelector(".t").textContent = l.title;
+    a.querySelector(".d").textContent = l.desc;
+    linksEl.appendChild(a);
+  });
+
+  /* ---- toast for unset links ---- */
+  var toast = document.getElementById("toast"), toastTimer = null;
+  function showToast(html){
+    toast.innerHTML = html;
+    toast.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function(){ toast.classList.remove("show"); }, 3800);
+  }
+  document.addEventListener("click", function(ev){
+    var a = ev.target.closest("a[data-link]");
+    if (!a) return;
+    if (!linkUrl(a.dataset.link)) {
+      ev.preventDefault();
+      showToast("<b>Link not set yet.</b> Open <b>admin.html</b> (the dashboard) to add your real " +
+                a.dataset.link + " link, then publish it. Tip: run the dashboard from the same folder.");
+    }
+  });
+
+  /* ================= motion ================= */
   var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   /* ---------- matrix rain ---------- */
@@ -344,11 +437,8 @@
   document.getElementById("track").innerHTML = html + html;
 
   /* ---------- hero typing rotator ---------- */
-  var phrases = [
-    "We build your product.",
-    "Then we attack it — like hackers would.",
-    "So your users never meet one."
-  ], pi = 0, ci = 0, del = false, typed = document.getElementById("typed");
+  var phrases = (CFG.typing && CFG.typing.length ? CFG.typing : DEFAULTS.typing).slice();
+  var pi = 0, ci = 0, del = false, typed = document.getElementById("typed");
   function type(){
     var p = phrases[pi];
     typed.textContent = p.slice(0, ci);

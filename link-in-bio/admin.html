@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — edit your link-in-bio page</title>
+<style>
+  :root{
+    --bg:#060A07; --panel:#0C130E; --panel2:#0A100C;
+    --line:rgba(148,222,180,.14); --line2:rgba(148,222,180,.28);
+    --green:#4ADE80; --green-deep:#22C55E; --amber:#FFBD2E;
+    --orange:#FB923C; --red:#F87171;
+    --text:#F2F7F2; --muted:#9CA89C;
+    --glow:0 0 24px rgba(74,222,128,.25);
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{
+    font-family:"Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:var(--bg);color:var(--text);min-height:100vh;
+    background-image:
+      radial-gradient(700px 480px at 90% -5%, rgba(74,222,128,.09), transparent 60%),
+      radial-gradient(600px 480px at 0% 100%, rgba(255,189,46,.05), transparent 60%);
+  }
+  ::selection{background:rgba(74,222,128,.35)}
+  header{
+    display:flex;align-items:center;gap:14px;flex-wrap:wrap;
+    padding:18px 26px;border-bottom:1px solid var(--line);
+    background:rgba(12,19,14,.7);position:sticky;top:0;z-index:5;backdrop-filter:blur(10px);
+  }
+  .logo-badge{
+    width:40px;height:40px;border-radius:12px;background:var(--panel);
+    border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;
+    box-shadow:var(--glow);
+  }
+  .logo-badge svg{width:24px;height:24px}
+  header h1{font-size:17px;font-weight:700}
+  header small{display:block;color:var(--muted);font-size:12px;font-weight:400}
+  header .spacer{flex:1}
+  .btn{
+    border:1px solid var(--line2);background:var(--panel);color:var(--text);
+    font:inherit;font-weight:600;font-size:13.5px;padding:10px 16px;border-radius:11px;
+    cursor:pointer;display:inline-flex;align-items:center;gap:8px;
+    transition:transform .15s ease,border-color .15s ease,box-shadow .15s ease;
+  }
+  .btn:hover{transform:translateY(-1px);border-color:var(--green)}
+  .btn.primary{
+    background:linear-gradient(135deg,var(--green),var(--green-deep));
+    color:#04120A;border:none;box-shadow:var(--glow);
+  }
+  .btn.primary:hover{box-shadow:0 0 30px rgba(74,222,128,.4)}
+  .btn.warn{border-color:rgba(248,113,113,.4);color:var(--red)}
+  .btn.warn:hover{border-color:var(--red)}
+
+  .layout{display:grid;grid-template-columns:minmax(340px,520px) 1fr;gap:0;align-items:start}
+  @media (max-width: 900px){ .layout{grid-template-columns:1fr} .preview-pane{position:static!important;height:640px!important} }
+
+  form{padding:22px 26px 60px;display:flex;flex-direction:column;gap:22px}
+  fieldset{
+    border:1px solid var(--line);border-radius:16px;background:var(--panel);
+    padding:18px;display:flex;flex-direction:column;gap:13px;
+  }
+  legend{font-size:12px;letter-spacing:2.5px;text-transform:uppercase;color:var(--green);padding:0 8px;font-weight:700}
+  label{font-size:12.5px;color:var(--muted);display:flex;flex-direction:column;gap:6px}
+  label b{color:var(--text);font-weight:600;font-size:13px}
+  input[type=text],input[type=url],input[type=tel],textarea{
+    font:inherit;font-size:14px;color:var(--text);
+    background:var(--panel2);border:1px solid var(--line2);border-radius:10px;
+    padding:10px 12px;outline:none;transition:border-color .15s ease,box-shadow .15s ease;width:100%;
+  }
+  input:focus,textarea:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(74,222,128,.12)}
+  input::placeholder,textarea::placeholder{color:rgba(156,168,156,.55)}
+  textarea{resize:vertical;min-height:76px;font-family:Consolas,monospace;font-size:13px}
+  .hint{font-size:11.5px;color:var(--muted);line-height:1.5}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+  .logo-pick{display:flex;gap:14px;align-items:center;flex-wrap:wrap}
+  .logo-pick .btn{font-size:12.5px;padding:9px 13px}
+  #logoThumb{
+    width:52px;height:52px;border-radius:14px;background:var(--panel2);
+    border:1px solid var(--line2);display:flex;align-items:center;justify-content:center;overflow:hidden;flex:none;
+  }
+  #logoThumb img{width:100%;height:100%;object-fit:cover}
+  #logoThumb svg{width:30px;height:30px}
+  input[type=color]{
+    width:52px;height:34px;padding:2px;border:1px solid var(--line2);
+    border-radius:8px;background:var(--panel2);cursor:pointer;
+  }
+  .links-list{display:flex;flex-direction:column;gap:10px}
+  .link-row{
+    border:1px solid var(--line);border-radius:12px;padding:12px;
+    display:flex;flex-direction:column;gap:8px;background:var(--panel2);
+  }
+  .link-row .lrt{display:flex;align-items:center;gap:8px;font-weight:600;font-size:13.5px}
+  .link-row .lrt i{width:8px;height:8px;border-radius:2px;transform:rotate(45deg);background:var(--green)}
+  .link-row:nth-of-type(3) .lrt i{background:var(--orange)}
+  .link-row:nth-of-type(5) .lrt i{background:var(--red)}
+  .link-row:nth-of-type(6) .lrt i{background:var(--amber)}
+
+  .preview-pane{
+    position:sticky;top:77px;height:calc(100vh - 77px);
+    border-left:1px solid var(--line);background:#050806;
+    display:flex;flex-direction:column;
+  }
+  .preview-pane .pv-head{
+    padding:10px 18px;font-size:12px;letter-spacing:2px;text-transform:uppercase;
+    color:var(--muted);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px;
+  }
+  .preview-pane .pv-head .live{width:8px;height:8px;border-radius:50%;background:var(--green);animation:pulse 1.6s ease-out infinite}
+  @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(74,222,128,.5)}100%{box-shadow:0 0 0 9px rgba(74,222,128,0)}}
+  .preview-pane iframe{flex:1;border:none;width:100%;background:var(--bg)}
+  .phone-frame{flex:1;display:flex;justify-content:center;padding:14px;overflow:hidden}
+  .phone-frame iframe{
+    width:390px;max-width:100%;border-radius:28px;border:1px solid var(--line2);
+    box-shadow:0 20px 60px rgba(0,0,0,.5);
+  }
+
+  .publish{
+    border:1px solid rgba(255,189,46,.35);border-radius:14px;padding:14px 16px;
+    background:rgba(255,189,46,.06);font-size:13px;line-height:1.7;color:var(--text);
+  }
+  .publish b{color:var(--amber)}
+  .publish code{font-family:Consolas,monospace;color:var(--green);font-size:12.5px}
+  .saved-flash{
+    position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+    background:#101a12;border:1px solid var(--green);border-radius:12px;
+    padding:11px 20px;font-size:13.5px;box-shadow:0 10px 30px rgba(0,0,0,.5);
+    opacity:0;pointer-events:none;transition:opacity .25s ease;z-index:30;
+  }
+  .saved-flash.show{opacity:1}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo-badge">
+    <svg viewBox="0 0 24 24" fill="none">
+      <path d="M12 2.5l7.5 3.2v5.1c0 4.9-3.2 9.3-7.5 10.9-4.3-1.6-7.5-6-7.5-10.9V5.7L12 2.5z"
+            stroke="var(--green)" stroke-width="1.7" stroke-linejoin="round"/>
+      <text x="12" y="13.8" text-anchor="middle" fill="#F2F7F2" font-family="Consolas,monospace" font-size="6.3" font-weight="700">&lt;/&gt;</text>
+    </svg>
+  </div>
+  <h1>Link-in-bio Dashboard<small>edit everything — changes preview live, publish takes one file</small></h1>
+  <div class="spacer"></div>
+  <a class="btn" href="index.html" target="_blank">Open site ↗</a>
+  <button class="btn" id="btn-reset" type="button" title="Reset form to the last saved values">↺ Reset</button>
+  <button class="btn" id="btn-download" type="button">⬇ Download config.js</button>
+  <button class="btn primary" id="btn-save" type="button">💾 Save &amp; Preview</button>
+</header>
+
+<div class="layout">
+  <form id="f" autocomplete="off">
+    <fieldset>
+      <legend>Brand</legend>
+      <label><b>Page name</b>
+        <input type="text" id="f-name" placeholder="e.g. Tasnim &amp; Sara — Tech Duo">
+      </label>
+      <label><b>Instagram handle</b>
+        <input type="text" id="f-handle" placeholder="@your.handle">
+      </label>
+      <label><b>Status pill</b>
+        <input type="text" id="f-status" placeholder="ACCEPTING NEW PROJECTS">
+      </label>
+      <label><b>Typing tagline</b> — one phrase per line, it types them in a loop
+        <textarea id="f-typing" rows="3" placeholder="We build your product.&#10;Then we attack it.&#10;So your users never meet one."></textarea>
+      </label>
+      <div class="logo-pick">
+        <div id="logoThumb"></div>
+        <div style="flex:1">
+          <label style="margin-bottom:6px"><b>Logo</b></label>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+            <button class="btn" type="button" id="btn-logo-img" onclick="document.getElementById('f-logo').click()">Upload image</button>
+            <button class="btn" type="button" id="btn-logo-default">Use default shield</button>
+            <input type="file" id="f-logo" accept="image/*" hidden>
+          </div>
+          <div class="hint" style="margin-top:6px">Square image works best. It replaces the green shield on the page.</div>
+        </div>
+      </div>
+      <label style="flex-direction:row;align-items:center;gap:12px"><b>Accent color</b>
+        <input type="color" id="f-accent" value="#4ADE80">
+        <span class="hint">no blue/purple 😉</span>
+      </label>
+    </fieldset>
+
+    <fieldset>
+      <legend>Links</legend>
+      <div class="link-row">
+        <div class="lrt"><i></i>WhatsApp</div>
+        <label>WhatsApp number (with country code, digits only)
+          <input type="tel" id="f-phone" placeholder="e.g. 21612345678">
+        </label>
+        <div class="hint">We build the wa.me chat link for you automatically — clients tap and chat.</div>
+      </div>
+      <div class="links-list" id="linkRows"></div>
+      <div class="hint">Leave a link empty to show a "not set yet" message instead of a dead click. Instagram handle can stay as text.</div>
+    </fieldset>
+
+    <fieldset>
+      <legend>Footer</legend>
+      <label>Footer text
+        <input type="text" id="f-footer" placeholder='Response time < 24h · DM "PROJECT" on Instagram'>
+      </label>
+    </fieldset>
+
+    <div class="publish">
+      <b>How to publish for everyone</b> (visitors don't see your browser's saved copy):<br>
+      1. Click <b>⬇ Download config.js</b><br>
+      2. Replace <code>link-in-bio/config.js</code> in your GitHub repo with the downloaded file<br>
+      3. Commit &amp; push — GitHub Pages redeploys automatically.<br>
+      <span class="hint">Or just ask ZCode: "commit my config" after saving.</span>
+    </div>
+  </form>
+
+  <div class="preview-pane">
+    <div class="pv-head"><span class="live"></span> Live preview — updates on Save</div>
+    <div class="phone-frame"><iframe id="pv" src="index.html" title="preview"></iframe></div>
+  </div>
+</div>
+
+<div class="saved-flash" id="flash">Saved ✓ preview updated</div>
+
+<script src="config.js"></script>
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+
+  function loadConfig(){
+    var stored = null;
+    try { stored = JSON.parse(localStorage.getItem("bio-config")); } catch(e) {}
+    var base = JSON.parse(JSON.stringify(window.BIO_CONFIG || {}));
+    return Object.assign(base, stored || {});
+  }
+  var CFG = loadConfig();
+
+  /* ---------- link rows ---------- */
+  var LINK_ORDER = ["services","book","portfolio","whatsapp","checklist","linkedin"];
+  var TITLES = {
+    services:"Our Services", book:"Booking link (calendly, cal.com, form…)",
+    portfolio:"Portfolio / case studies", whatsapp:"WhatsApp (optional if number above)",
+    checklist:"Free Security Checklist", linkedin:"LinkedIn"
+  };
+  var rowsEl = $("linkRows");
+  LINK_ORDER.forEach(function(key){
+    if(key === "whatsapp") return; // handled via phone field
+    var row = document.createElement("div");
+    row.className = "link-row";
+    row.innerHTML =
+      '<div class="lrt"><i></i>' + TITLES[key] + '</div>' +
+      '<label>URL<input type="url" data-key="' + key + '" placeholder="https://…"></label>';
+    rowsEl.appendChild(row);
+  });
+
+  /* ---------- fill form ---------- */
+  function fillForm(){
+    $("f-name").value = CFG.name || "";
+    $("f-handle").value = CFG.handle || "";
+    $("f-status").value = CFG.status || "";
+    $("f-typing").value = (CFG.typing || []).join("\n");
+    $("f-accent").value = CFG.accent || "#4ADE80";
+    $("f-phone").value = CFG.phone || "";
+    $("f-footer").value = CFG.footer || "";
+    document.querySelectorAll("input[type=url][data-key]").forEach(function(inp){
+      var l = (CFG.links || {})[inp.dataset.key] || {};
+      inp.value = l.url || "";
+    });
+    renderThumb();
+  }
+  var logoImageData = CFG.logoImage || null;
+  function renderThumb(){
+    var t = $("logoThumb");
+    if(logoImageData){
+      t.innerHTML = '<img alt="logo" src="' + logoImageData + '">';
+    } else {
+      t.innerHTML =
+        '<svg viewBox="0 0 24 24" fill="none">' +
+        '<path d="M12 2.5l7.5 3.2v5.1c0 4.9-3.2 9.3-7.5 10.9-4.3-1.6-7.5-6-7.5-10.9V5.7L12 2.5z" stroke="var(--green)" stroke-width="1.7" stroke-linejoin="round"/>' +
+        '<text x="12" y="13.8" text-anchor="middle" fill="#F2F7F2" font-family="Consolas,monospace" font-size="6.3" font-weight="700">&lt;/&gt;</text></svg>';
+    }
+  }
+
+  /* ---------- logo upload ---------- */
+  $("btn-logo-img").addEventListener("click", function(){ $("f-logo").click(); });
+  $("f-logo").addEventListener("change", function(){
+    var file = this.files[0];
+    if(!file) return;
+    var rd = new FileReader();
+    rd.onload = function(){
+      // downscale to 256px to keep config.js small
+      var img = new Image();
+      img.onload = function(){
+        var c = document.createElement("canvas");
+        var sz = 256;
+        c.width = sz; c.height = sz;
+        var g = c.getContext("2d");
+        var side = Math.min(img.width, img.height);
+        g.drawImage(img, (img.width-side)/2, (img.height-side)/2, side, side, 0, 0, sz, sz);
+        logoImageData = c.toDataURL("image/png");
+        renderThumb();
+        flash("Logo ready — click Save & Preview");
+      };
+      img.src = rd.result;
+    };
+    rd.readAsDataURL(file);
+  });
+  $("btn-logo-default").addEventListener("click", function(){
+    logoImageData = null; renderThumb(); flash("Default shield restored — click Save & Preview");
+  });
+
+  /* ---------- collect + save ---------- */
+  function collect(){
+    var urls = {};
+    document.querySelectorAll("input[type=url][data-key]").forEach(function(inp){
+      urls[inp.dataset.key] = inp.value.trim();
+    });
+    return {
+      name: $("f-name").value.trim() || "YourName Duo",
+      handle: $("f-handle").value.trim() || "@your.handle",
+      status: $("f-status").value.trim() || "ACCEPTING NEW PROJECTS",
+      typing: $("f-typing").value.split("\n").map(function(s){return s.trim();}).filter(Boolean),
+      logoImage: logoImageData,
+      accent: $("f-accent").value,
+      phone: $("f-phone").value.replace(/[^0-9+]/g,""),
+      footer: $("f-footer").value,
+      links: {
+        services:  { url: urls.services  || "", title: "Our Services",            desc: "Software · Security · Automation" },
+        book:      { url: urls.book      || "", title: "Book a Free 15-min Chat", desc: "Tell us about your project" },
+        portfolio: { url: urls.portfolio || "", title: "Recent Work",             desc: "Projects & case studies" },
+        whatsapp:  { url: urls.whatsapp  || "", title: "WhatsApp Us",            desc: "Fastest reply" },
+        checklist: { url: urls.checklist || "", title: "Free Security Checklist", desc: "10 things to check today" },
+        linkedin:  { url: urls.linkedin  || "", title: "LinkedIn",                desc: "Let's connect professionally" }
+      }
+    };
+  }
+  function save(){
+    CFG = collect();
+    localStorage.setItem("bio-config", JSON.stringify(CFG));
+    $("pv").src = "index.html?r=" + Date.now(); // reload preview (bypass cache)
+    flash("Saved ✓ preview updated");
+  }
+  $("btn-save").addEventListener("click", save);
+
+  $("btn-download").addEventListener("click", function(){
+    CFG = collect();
+    var body = "window.BIO_CONFIG = " + JSON.stringify(CFG, null, 2) + ";\n";
+    var blob = new Blob([body], {type:"text/javascript"});
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "config.js";
+    document.body.appendChild(a); a.click(); a.remove();
+    flash("config.js downloaded — replace it in the repo & push to publish");
+  });
+
+  $("btn-reset").addEventListener("click", function(){
+    localStorage.removeItem("bio-config");
+    CFG = loadConfig();
+    logoImageData = CFG.logoImage || null;
+    fillForm();
+    $("pv").src = "index.html?r=" + Date.now();
+    flash("Reset to last published values");
+  });
+
+  var flashTimer = null;
+  function flash(msg){
+    var el = $("flash");
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(flashTimer);
+    flashTimer = setTimeout(function(){ el.classList.remove("show"); }, 2600);
+  }
+
+  fillForm();
+})();
+</script>
+</body>
+</html>
