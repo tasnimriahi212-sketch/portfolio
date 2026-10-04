@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    { "source": "/", "destination": "/link-in-bio/index.html" },
+    { "source": "/index.html", "destination": "/link-in-bio/index.html" },
+    { "source": "/admin.html", "destination": "/link-in-bio/admin.html" },
+    { "source": "/config.js", "destination": "/link-in-bio/config.js" }
+  ]
+}
